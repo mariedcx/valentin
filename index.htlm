@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ma Valentine ?</title>
+    <link href="https://fonts.googleapis.com/css2?family=Pacifico&family=Fredoka+One&display=swap" rel="stylesheet">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background-color: #ffebee; /* Rose pâle */
+            font-family: 'Pacifico', cursive;
+            text-align: center;
+            overflow-x: hidden;
+            transition: background-color 0.5s ease;
+        }
+
+        .container {
+            max-width: 600px;
+            padding: 20px;
+            z-index: 2;
+        }
+
+        #main-photo {
+            width: 250px;
+            border-radius: 20px;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+
+        h1 {
+            color: #d81b60;
+            font-size: 2.5rem;
+            margin-bottom: 30px;
+            text-shadow: 2px 2px #fff;
+        }
+
+        .buttons {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        button {
+            padding: 15px 30px;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            font-size: 1.2rem;
+            transition: all 0.3s ease;
+            font-family: 'Fredoka One', cursive;
+        }
+
+        #btn-yes {
+            background-color: #ff4081;
+            color: white;
+            box-shadow: 0 5px 15px rgba(255, 64, 129, 0.4);
+        }
+
+        #btn-no {
+            background-color: #fce4ec;
+            color: #ad1457;
+        }
+
+        /* Styles pour la page de succès */
+        .hidden { display: none; }
+        
+        #success-page {
+            background-color: #f06292; /* Rose plus foncé */
+            width: 100%;
+            height: 100%;
+            position: fixed;
+            top: 0;
+            left: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            overflow-y: auto;
+            padding: 20px;
+        }
+
+        .postcard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            max-width: 800px;
+            background: white;
+            padding: 20px;
+            border: 10px solid #fff;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            transform: rotate(-2deg);
+        }
+
+        .postcard-grid img {
+            width: 100%;
+            height: 150px;
+            object-fit: cover;
+            border: 2px solid #eee;
+        }
+
+        #angry-photo {
+            position: fixed;
+            bottom: 0;
+            right: 0;
+            width: 100px;
+            transition: all 0.5s ease;
+            z-index: 1;
+            opacity: 0;
+        }
+
+        #yay-gif {
+            width: 200px;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container" id="question-container">
+        <img src="photo1.png" alt="Moi" id="main-photo">
+        <h1>Accepterais-tu d'être mon Valentin ce 14 février ?</h1>
+        <div class="buttons">
+            <button id="btn-yes">Ouiiiii</button>
+            <button id="btn-no">Surtout pas</button>
+        </div>
+    </div>
+
+    <img src="photo11.png" id="angry-photo" alt="Humour">
+
+    <div id="success-page" class="hidden">
+        <h1 style="color: white; text-shadow: none;">YAY ! ❤️</h1>
+        <div class="postcard-grid">
+            <img src="photo2.png">
+            <img src="photo3.png">
+            <img src="photo4.png">
+            <img src="photo5.png">
+            <img src="photo6.png">
+        </div>
+        <div id="gif-container"></div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
+
+    <script>
+        const btnNo = document.getElementById('btn-no');
+        const btnYes = document.getElementById('btn-yes');
+        const angryPhoto = document.getElementById('angry-photo');
+        
+        const noTexts = [
+            "Tu es sûr ?",
+            "Tu en es certain ?",
+            "Attention pousspouss",
+            "Essaye de cliquer sur l'autre bulle plutôt",
+            "Je pense que tu devrais réfléchir mon coeur",
+            "Reconsidère la chose"
+        ];
+
+        let noCount = 0;
+        let yesSize = 1.2;
+        let noSize = 1.2;
+        let angryPhotoSize = 100;
+
+        btnNo.addEventListener('click', () => {
+            // Changer le texte
+            btnNo.innerText = noTexts[Math.min(noCount, noTexts.length - 1)];
+            
+            // Changer les tailles
+            yesSize += 0.4;
+            noSize -= 0.1;
+            btnYes.style.transform = `scale(${yesSize})`;
+            btnNo.style.transform = `scale(${Math.max(noSize, 0.5)})`;
+
+            // Faire apparaître et grandir la photo 11
+            noCount++;
+            angryPhoto.style.opacity = "1";
+            angryPhotoSize += 50;
+            angryPhoto.style.width = angryPhotoSize + "px";
+        });
+
+        btnYes.addEventListener('click', () => {
+            document.getElementById('question-container').classList.add('hidden');
+            angryPhoto.classList.add('hidden');
+            document.getElementById('success-page').classList.remove('hidden');
+            document.body.style.backgroundColor = "#f06292";
+
+            // Lancer les confettis
+            confetti({
+                particleCount: 150,
+                spread: 70,
+                origin: { y: 0.6 }
+            });
+
+            // Faire apparaître le GIF après 10 secondes
+            setTimeout(() => {
+                const gif = document.createElement('img');
+                gif.src = "https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExNHJid2p6ZndueGZ3eGZ3eGZ3eGZ3eGZ3eGZ3eGZ3eGZ3&ep=v1_gifs_search&rid=giphy.gif&ct=g"; // Lien vers un gif YAY (à adapter)
+                gif.id = "yay-gif";
+                document.getElementById('gif-container').appendChild(gif);
+            }, 10000);
+        });
+    </script>
+</body>
+</html>
